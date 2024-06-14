@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>221277OrtizCruzDiegoAntonio</title>
+    <title>Analizador Léxico,Sintáctico, Semantico</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Analizador Léxico y Sintáctico 221277</h2>
+        <h2>Analizador Léxico,Sintáctico y Semantico 221277</h2>
         <form method="POST">
             <textarea name="code" rows="10" cols="50">{{ request.form.code if request.method == 'POST' else '' }}</textarea><br>
             <input type="submit" value="Analizar">
@@ -23,15 +23,15 @@
                         <th>Identificador</th>
                         <th>Número</th>
                         <th>Símbolo</th>
-                        <th>Parentesis izquierdo</th>
-                        <th>Parentesis Derecho</th>
+                        <th>Paréntesis izquierdo</th>
+                        <th>Paréntesis Derecho</th>
                         <th>Llave izquierda</th>
                         <th>Llave Derecha</th>
                     </tr>
                     {% for token in tokens %}
                     <tr>
                         <td>{{ token.value }}</td>
-                        <td>{{ 'X' if token.type in ['FOR', 'VAR', 'CONSOLE', 'LOG', 'GLOBAL'] else '' }}</td>
+                        <td>{{ 'X' if token.type in ['FOR', 'VAR', 'CONSOLE', 'LOG', 'GLOBAL','INT','SYSTEM','PRINTLN','OUT'] else '' }}</td>
                         <td>{{ 'X' if token.type == 'ID' else '' }}</td>
                         <td>{{ 'X' if token.type == 'NUMBER' else '' }}</td>
                         <td>{{ 'X' if token.type in ['PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'ASSIGN', 'LT', 'LE', 'GT', 'GE', 'EQ', 'NE', 'DOT', 'SEMICOLON', 'COMMA', 'SINGLE_QUOTE'] else '' }}</td>
@@ -56,6 +56,10 @@
             <div class="AS">
                 <h2>Análisis Sintáctico</h2>
                 <pre>{{ syntax_result }}</pre>
+            </div>
+            <div class="AS">
+                <h2>Análisis Semántico</h2>
+                <p>{{ semantic_result }}</p>
             </div>
         </div>
     </div>
