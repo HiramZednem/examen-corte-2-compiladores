@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analizador Léxico,Sintáctico, Semantico</title>
+    <title>Analizador Léxico, Sintáctico y Semántico</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Analizador Léxico,Sintáctico y Semantico 221277</h2>
+        <h1>Analizador Léxico, Sintáctico y Semántico</h1>
         <form method="POST">
-            <textarea name="code" rows="10" cols="50">{{ request.form.code if request.method == 'POST' else '' }}</textarea><br>
             <input type="submit" value="Analizar">
+            <textarea name="code" rows="10" cols="50">{{ request.form.code if request.method == 'POST' else '' }}</textarea><br>
+            
         </form>
         <div class="result flex-container">
-            <div class="AL">
-                <h2>Análisis Léxico</h2>
-                <table border="1">                
+            <button class="accordion">Análisis Léxico</button>
+            <div class="panel">
+                <table class="analysis-table">                
                     <tr>
                         <th>Token</th>
                         <th>Palabra reservada</th>
@@ -42,26 +43,71 @@
                     </tr>
                     {% endfor %}
                 </table>
-                <div>
-                    <p>Palabras reservadas: {{ counts.reserved }}</p>
-                    <p>Identificadores: {{ counts.id }}</p>
-                    <p>Números: {{ counts.number }}</p>
-                    <p>Símbolos: {{ counts.symbol }}</p>
-                    <p>Paréntesis izquierdos: {{ counts.lparen }}</p>
-                    <p>Paréntesis derechos: {{ counts.rparen }}</p>
-                    <p>Llaves izquierdas: {{ counts.lbrace }}</p>
-                    <p>Llaves derechas: {{ counts.rbrace }}</p>
-                </div>                
+                
+                <table class="counts-table">
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Conteo</th>
+                    </tr>
+                    <tr>
+                        <td>Palabras reservadas</td>
+                        <td>{{ counts.reserved }}</td>
+                    </tr>
+                    <tr>
+                        <td>Identificadores</td>
+                        <td>{{ counts.id }}</td>
+                    </tr>
+                    <tr>
+                        <td>Números</td>
+                        <td>{{ counts.number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Símbolos</td>
+                        <td>{{ counts.symbol }}</td>
+                    </tr>
+                    <tr>
+                        <td>Paréntesis izquierdos</td>
+                        <td>{{ counts.lparen }}</td>
+                    </tr>
+                    <tr>
+                        <td>Paréntesis derechos</td>
+                        <td>{{ counts.rparen }}</td>
+                    </tr>
+                    <tr>
+                        <td>Llaves izquierdas</td>
+                        <td>{{ counts.lbrace }}</td>
+                    </tr>
+                    <tr>
+                        <td>Llaves derechas</td>
+                        <td>{{ counts.rbrace }}</td>
+                    </tr>
+                </table>
             </div>
-            <div class="AS">
-                <h2>Análisis Sintáctico</h2>
+            
+            <button class="accordion">Análisis Sintáctico</button>
+            <div class="panel">
                 <pre>{{ syntax_result }}</pre>
             </div>
-            <div class="AS">
-                <h2>Análisis Semántico</h2>
+            
+            <button class="accordion">Análisis Semántico</button>
+            <div class="panel">
                 <p>{{ semantic_result }}</p>
             </div>
         </div>
     </div>
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
