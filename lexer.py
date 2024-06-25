@@ -11,7 +11,7 @@ reserved = {
 tokens = [
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'ASSIGN',
     'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'SEMICOLON', 'COMMA', 'LT', 'LE',
-    'GT', 'GE', 'EQ', 'NE', 'INCLUDE'
+    'GT', 'GE', 'EQ', 'NE', 'INCLUDE', 'PLUSPLUS'
 ] + list(reserved.values())
 
 # Reglas simples para los tokens
@@ -32,6 +32,7 @@ t_GT = r'>'
 t_GE = r'>='
 t_EQ = r'=='
 t_NE = r'!='
+t_PLUSPLUS = r'\+\+'
 
 # Regla para los números
 def t_NUMBER(t):

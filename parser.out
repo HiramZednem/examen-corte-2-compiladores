@@ -36,9 +36,8 @@ Rule 26    condition -> expression GT expression
 Rule 27    condition -> expression GE expression
 Rule 28    condition -> expression EQ expression
 Rule 29    condition -> expression NE expression
-Rule 30    increment -> ID PLUS PLUS
-Rule 31    increment -> ID MINUS MINUS
-Rule 32    empty -> <empty>
+Rule 30    increment -> ID PLUSPLUS
+Rule 31    empty -> <empty>
 
 Terminals, with rules where they appear
 
@@ -49,17 +48,18 @@ EQ                   : 28
 FOR                  : 23
 GE                   : 27
 GT                   : 26
-ID                   : 5 10 16 17 30 31
+ID                   : 5 10 16 17 30
 INCLUDE              : 2 3
 INT                  : 6
 LBRACE               : 5 23
 LE                   : 25
 LPAREN               : 5 23
 LT                   : 24
-MINUS                : 20 31 31
+MINUS                : 20
 NE                   : 29
 NUMBER               : 5 10 18
-PLUS                 : 19 30 30
+PLUS                 : 19
+PLUSPLUS             : 30
 RBRACE               : 5 23
 RETURN               : 5
 RPAREN               : 5 23
@@ -93,10 +93,10 @@ state 0
     (2) includes -> . INCLUDE includes
     (3) includes -> . INCLUDE
     (4) includes -> . empty
-    (32) empty -> .
+    (31) empty -> .
 
     INCLUDE         shift and go to state 3
-    INT             reduce using rule 32 (empty -> .)
+    INT             reduce using rule 31 (empty -> .)
 
     program                        shift and go to state 1
     includes                       shift and go to state 2
@@ -126,13 +126,13 @@ state 3
     (2) includes -> . INCLUDE includes
     (3) includes -> . INCLUDE
     (4) includes -> . empty
-    (32) empty -> .
+    (31) empty -> .
 
   ! reduce/reduce conflict for INT resolved using rule 3 (includes -> INCLUDE .)
     INT             reduce using rule 3 (includes -> INCLUDE .)
     INCLUDE         shift and go to state 3
 
-  ! INT             [ reduce using rule 32 (empty -> .) ]
+  ! INT             [ reduce using rule 31 (empty -> .) ]
 
     includes                       shift and go to state 8
     empty                          shift and go to state 4
@@ -200,12 +200,12 @@ state 12
     (8) declarations -> . declaration
     (9) declarations -> . empty
     (10) declaration -> . type ID ASSIGN NUMBER SEMICOLON
-    (32) empty -> .
+    (31) empty -> .
     (6) type -> . INT
 
-    ID              reduce using rule 32 (empty -> .)
-    FOR             reduce using rule 32 (empty -> .)
-    RETURN          reduce using rule 32 (empty -> .)
+    ID              reduce using rule 31 (empty -> .)
+    FOR             reduce using rule 31 (empty -> .)
+    RETURN          reduce using rule 31 (empty -> .)
     INT             shift and go to state 7
 
     type                           shift and go to state 13
@@ -228,11 +228,11 @@ state 14
     (13) statements -> . empty
     (14) statement -> . assignment
     (15) statement -> . for_loop
-    (32) empty -> .
+    (31) empty -> .
     (16) assignment -> . ID ASSIGN expression SEMICOLON
     (23) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
-    RETURN          reduce using rule 32 (empty -> .)
+    RETURN          reduce using rule 31 (empty -> .)
     ID              shift and go to state 18
     FOR             shift and go to state 24
 
@@ -250,7 +250,7 @@ state 15
     (8) declarations -> . declaration
     (9) declarations -> . empty
     (10) declaration -> . type ID ASSIGN NUMBER SEMICOLON
-    (32) empty -> .
+    (31) empty -> .
     (6) type -> . INT
 
   ! reduce/reduce conflict for ID resolved using rule 8 (declarations -> declaration .)
@@ -261,9 +261,9 @@ state 15
     RETURN          reduce using rule 8 (declarations -> declaration .)
     INT             shift and go to state 7
 
-  ! ID              [ reduce using rule 32 (empty -> .) ]
-  ! FOR             [ reduce using rule 32 (empty -> .) ]
-  ! RETURN          [ reduce using rule 32 (empty -> .) ]
+  ! ID              [ reduce using rule 31 (empty -> .) ]
+  ! FOR             [ reduce using rule 31 (empty -> .) ]
+  ! RETURN          [ reduce using rule 31 (empty -> .) ]
 
     declaration                    shift and go to state 15
     declarations                   shift and go to state 25
@@ -309,7 +309,7 @@ state 20
     (13) statements -> . empty
     (14) statement -> . assignment
     (15) statement -> . for_loop
-    (32) empty -> .
+    (31) empty -> .
     (16) assignment -> . ID ASSIGN expression SEMICOLON
     (23) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
@@ -320,8 +320,8 @@ state 20
     ID              shift and go to state 18
     FOR             shift and go to state 24
 
-  ! RETURN          [ reduce using rule 32 (empty -> .) ]
-  ! RBRACE          [ reduce using rule 32 (empty -> .) ]
+  ! RETURN          [ reduce using rule 31 (empty -> .) ]
+  ! RBRACE          [ reduce using rule 31 (empty -> .) ]
 
     statement                      shift and go to state 20
     statements                     shift and go to state 29
@@ -761,8 +761,7 @@ state 51
 state 52
 
     (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON . increment RPAREN LBRACE statements RBRACE
-    (30) increment -> . ID PLUS PLUS
-    (31) increment -> . ID MINUS MINUS
+    (30) increment -> . ID PLUSPLUS
 
     ID              shift and go to state 60
 
@@ -867,11 +866,9 @@ state 59
 
 state 60
 
-    (30) increment -> ID . PLUS PLUS
-    (31) increment -> ID . MINUS MINUS
+    (30) increment -> ID . PLUSPLUS
 
-    PLUS            shift and go to state 68
-    MINUS           shift and go to state 69
+    PLUSPLUS        shift and go to state 68
 
 
 state 61
@@ -968,24 +965,17 @@ state 67
 
     (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN . LBRACE statements RBRACE
 
-    LBRACE          shift and go to state 70
+    LBRACE          shift and go to state 69
 
 
 state 68
 
-    (30) increment -> ID PLUS . PLUS
+    (30) increment -> ID PLUSPLUS .
 
-    PLUS            shift and go to state 71
+    RPAREN          reduce using rule 30 (increment -> ID PLUSPLUS .)
 
 
 state 69
-
-    (31) increment -> ID MINUS . MINUS
-
-    MINUS           shift and go to state 72
-
-
-state 70
 
     (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE . statements RBRACE
     (11) statements -> . statement statements
@@ -993,42 +983,28 @@ state 70
     (13) statements -> . empty
     (14) statement -> . assignment
     (15) statement -> . for_loop
-    (32) empty -> .
+    (31) empty -> .
     (16) assignment -> . ID ASSIGN expression SEMICOLON
     (23) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
-    RBRACE          reduce using rule 32 (empty -> .)
+    RBRACE          reduce using rule 31 (empty -> .)
     ID              shift and go to state 18
     FOR             shift and go to state 24
 
     assignment                     shift and go to state 22
-    statements                     shift and go to state 73
+    statements                     shift and go to state 70
     statement                      shift and go to state 20
     empty                          shift and go to state 21
     for_loop                       shift and go to state 23
 
-state 71
-
-    (30) increment -> ID PLUS PLUS .
-
-    RPAREN          reduce using rule 30 (increment -> ID PLUS PLUS .)
-
-
-state 72
-
-    (31) increment -> ID MINUS MINUS .
-
-    RPAREN          reduce using rule 31 (increment -> ID MINUS MINUS .)
-
-
-state 73
+state 70
 
     (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements . RBRACE
 
-    RBRACE          shift and go to state 74
+    RBRACE          shift and go to state 71
 
 
-state 74
+state 71
 
     (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE .
 

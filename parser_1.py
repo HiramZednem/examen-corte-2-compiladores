@@ -3,6 +3,7 @@ from lexer import tokens, lexer
 
 # Variables para el análisis semántico
 defined_variables = set()  # Conjunto para almacenar variables definidas
+token_positions_85 = {}  # Diccionario para almacenar posiciones y valores de los tokens cuando lexpos es 85
 
 # Definición de la gramática
 def p_program(p):
@@ -34,6 +35,10 @@ def p_declarations(p):
 def p_declaration(p):
     '''declaration : type ID ASSIGN NUMBER SEMICOLON'''
     defined_variables.add(p[2])  # Agregar variable a conjunto de variables definidas
+    if p.lexpos(2) == 85:
+        token_positions_85[p[2]] = (p.lexpos(2), p[2])  # Almacenar la posición y el valor si lexpos es 85
+    if p.lexpos(4) == 85:
+        token_positions_85[p[4]] = (p.lexpos(4), p[4])  # Almacenar posición y valor del número si lexpos es 85
     p[0] = f"Declaración: int {p[2]} = {p[4]};"  # Mensaje informativo
 
 def p_statements(p):
@@ -50,6 +55,8 @@ def p_statement(p):
 def p_assignment(p):
     '''assignment : ID ASSIGN expression SEMICOLON'''
     validate_variable_definition(p[1])
+    if p.lexpos(1) == 85:
+        token_positions_85[p[1]] = (p.lexpos(1), p[1])  # Almacenar posición y valor del ID si lexpos es 85
     p[0] = p[1]
 
 def p_expression(p):
@@ -59,8 +66,11 @@ def p_expression(p):
                   | expression MINUS expression
                   | expression TIMES expression
                   | expression DIVIDE expression'''
-    if isinstance(p[1], str):
+    if isinstance(p[1], str) and not p[1].isdigit():
         validate_variable_definition(p[1])
+        if p.lexpos(1) == 85:
+            token_positions_85[p[1]] = (p.lexpos(1), p[1])  # Almacenar posición y valor del ID si lexpos es 85
+    p[0] = p[1]
 
 def p_for_loop(p):
     '''for_loop : FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE'''
@@ -74,12 +84,13 @@ def p_condition(p):
                  | expression GE expression
                  | expression EQ expression
                  | expression NE expression'''
-    pass
+    p[0] = (p[1], p[2], p[3])
 
 def p_increment(p):
-    '''increment : ID PLUS PLUS
-                 | ID MINUS MINUS'''
+    '''increment : ID PLUSPLUS'''
     validate_variable_definition(p[1])
+    if p.lexpos(1) == 85:
+        token_positions_85[p[1]] = (p.lexpos(1), p[1])  # Almacenar posición y valor del ID si lexpos es 85
     p[0] = p[1]
 
 def p_empty(p):
@@ -90,9 +101,9 @@ def validate_variable_definition(variable):
     if variable not in defined_variables:
         raise ValueError(f"Error semántico: Variable '{variable}' no definida correctamente en la línea {lexer.lineno}.")
 
-def validate_for_loop_variables(assignment_var, condition_var, increment_var):
+def validate_for_loop_variables(assignment_var, condition_expr, increment_var):
     validate_variable_definition(assignment_var)
-    validate_variable_definition(condition_var)
+    validate_variable_definition(condition_expr[0])
     validate_variable_definition(increment_var)
 
 def validate_variables():
@@ -111,13 +122,13 @@ def p_error(p):
         raise SyntaxError(error_message)
     else:
         raise SyntaxError(f"Error de sintaxis al final del archivo en la línea {lexer.lineno}. Falta una llave de cierre o punto y coma.")
-
 # Construir el parser
 parser = yacc.yacc()
 
 def parse_semantic(code):
-    global defined_variables
+    global defined_variables, token_positions_85
     defined_variables = set()
+    token_positions_85 = {}
     lexer.lineno = 1  # Reiniciar el número de línea
     try:
         result = parser.parse(code)
@@ -127,11 +138,36 @@ def parse_semantic(code):
 
 # Función para analizar el código
 def parse_code(code):
-    global defined_variables
+    global defined_variables, token_positions_85
     defined_variables = set()  # Reiniciar variables definidas para cada análisis
+    token_positions_85 = {}  # Reiniciar posiciones de tokens para cada análisis
     lexer.lineno = 1  # Reiniciar el número de línea
     try:
         result = parser.parse(code)
         return result if result else "La estructura del código está bien."
     except (SyntaxError, ValueError) as e:
         raise e
+
+# Ejemplo de uso
+code = '''
+int main(){
+  int z = 0; 
+  int val = 0;
+  int suma = 0;
+
+  for(z = 0; z <= 10; z++){
+    val = z * 10;
+    suma = suma + val;
+  } 
+
+  return 0;
+}
+'''
+
+try:
+    parse_code(code)
+    print("Análisis completado.")
+    for var, (pos, val) in token_positions_85.items():
+        print(f"Variable '{var}' con valor '{val}' en posición {pos}.")
+except (SyntaxError, ValueError) as e:
+    print(f"Error: {e}")
