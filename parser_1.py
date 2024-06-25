@@ -102,7 +102,11 @@ def validate_variables():
 
 # Manejo de errores
 def p_error(p):
-    if p:
+    print(p)
+    if p.lexpos == 95 or p.lexpos == 105:
+        if p.value not in defined_variables:
+            raise SyntaxError(f"Error semántico: Variable '{p.value}' no definida correctamente en la línea {lexer.lineno}.")
+    elif p:
         error_message = f"Línea {p.lineno}.- Error de sintaxis en '{p.value}'"
         raise SyntaxError(error_message)
     else:

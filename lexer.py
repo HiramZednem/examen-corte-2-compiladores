@@ -60,7 +60,6 @@ def t_newline(t):
 
 # Manejo de errores
 def t_error(t):
-    print(f"Línea {t.lineno}.- Caracter ilegal '{t.value[0]}'")
     t.lexer.skip(1)
 
 # Construir el lexer
