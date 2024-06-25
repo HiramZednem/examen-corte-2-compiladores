@@ -1,23 +1,17 @@
 import ply.lex as lex
 
-# Palabras reservadas
+# Palabras reservadas en C
 reserved = {
-    'var': 'VAR',
-    'for': 'FOR',
-    'console': 'CONSOLE',
-    'log': 'LOG',
-    'global': 'GLOBAL',
     'int': 'INT',
-    'out': 'OUT',
-    'println': 'PRINTLN',
-    'System': 'SYSTEM'  # Agregar System como palabra reservada
+    'return': 'RETURN',
+    'for': 'FOR'
 }
 
 # Lista de tokens incluyendo las palabras reservadas
 tokens = [
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'ASSIGN',
     'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'SEMICOLON', 'COMMA', 'LT', 'LE',
-    'GT', 'GE', 'EQ', 'NE', 'STRING', 'DOT', 'SINGLE_QUOTE'
+    'GT', 'GE', 'EQ', 'NE', 'INCLUDE'
 ] + list(reserved.values())
 
 # Reglas simples para los tokens
@@ -33,23 +27,27 @@ t_RBRACE = r'\}'
 t_SEMICOLON = r';'
 t_COMMA = r','
 t_LT = r'<'
-t_LE = r'<='  # Nueva regla para el operador menor o igual
+t_LE = r'<='
 t_GT = r'>'
 t_GE = r'>='
 t_EQ = r'=='
 t_NE = r'!='
-t_DOT = r'\.'
-t_SINGLE_QUOTE = r"'"
 
-# Expresión regular para identificar IDs y palabras reservadas
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value, 'ID') if t.value not in reserved else reserved[t.value]  # Verificar palabras reservadas
-    return t
-
+# Regla para los números
 def t_NUMBER(t):
     r'\d+'
     t.value = int(t.value)
+    return t
+
+# Regla para los identificadores y palabras reservadas
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value, 'ID')
+    return t
+
+# Regla para las directivas de preprocesador
+def t_INCLUDE(t):
+    r'\#include\s*<.*?>'
     return t
 
 # Ignorar espacios y tabulaciones

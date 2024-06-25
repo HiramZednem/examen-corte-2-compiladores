@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ASSIGN COMMA CONSOLE DIVIDE DOT EQ FOR GE GLOBAL GT ID INT LBRACE LE LOG LPAREN LT MINUS NE NUMBER OUT PLUS PRINTLN RBRACE RPAREN SEMICOLON SINGLE_QUOTE STRING SYSTEM TIMES VARprogram : declaration for_loopdeclaration : INT ID SEMICOLONfor_loop : FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACEassignment : ID ASSIGN NUMBERcondition : ID LE NUMBERincrement : ID PLUS PLUSblock : system_println_statementsystem_println_statement : SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON'
+_lr_signature = 'ASSIGN COMMA DIVIDE EQ FOR GE GT ID INCLUDE INT LBRACE LE LPAREN LT MINUS NE NUMBER PLUS RBRACE RETURN RPAREN SEMICOLON TIMESprogram : includes functionincludes : INCLUDE includes\n                | INCLUDE\n                | emptyfunction : type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACEtype : INTdeclarations : declaration declarations\n                    | declaration\n                    | emptydeclaration : type ID ASSIGN NUMBER SEMICOLONstatements : statement statements\n                  | statement\n                  | emptystatement : assignment\n                 | for_loopassignment : ID ASSIGN expression SEMICOLONexpression : ID\n                  | NUMBER\n                  | expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expressionfor_loop : FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACEcondition : expression LT expression\n                 | expression LE expression\n                 | expression GT expression\n                 | expression GE expression\n                 | expression EQ expression\n                 | expression NE expressionincrement : ID PLUS PLUS\n                 | ID MINUS MINUSempty :'
     
-_lr_action_items = {'INT':([0,],[3,]),'$end':([1,4,28,],[0,-1,-3,]),'FOR':([2,8,],[5,-2,]),'ID':([3,7,11,16,33,],[6,10,14,19,34,]),'LPAREN':([5,32,],[7,33,]),'SEMICOLON':([6,9,13,15,20,35,],[8,11,16,-4,-5,36,]),'ASSIGN':([10,],[12,]),'NUMBER':([12,17,],[15,20,]),'LE':([14,],[17,]),'RPAREN':([18,24,34,],[21,-6,35,]),'PLUS':([19,22,],[22,24,]),'LBRACE':([21,],[23,]),'SYSTEM':([23,],[27,]),'RBRACE':([25,26,36,],[28,-7,-8,]),'DOT':([27,30,],[29,31,]),'OUT':([29,],[30,]),'PRINTLN':([31,],[32,]),}
+_lr_action_items = {'INCLUDE':([0,3,],[3,3,]),'INT':([0,2,3,4,8,12,15,37,],[-32,7,-3,-4,-2,7,7,-10,]),'$end':([1,5,49,],[0,-1,-5,]),'ID':([6,7,12,13,14,15,16,20,22,23,25,27,30,37,38,39,40,41,42,44,52,53,54,55,56,57,58,70,74,],[9,-6,-32,17,18,-8,-9,18,-14,-15,-7,32,18,-10,-16,32,32,32,32,32,60,32,32,32,32,32,32,18,-23,]),'LPAREN':([9,24,],[10,30,]),'RPAREN':([10,59,71,72,],[11,67,-30,-31,]),'LBRACE':([11,67,],[12,70,]),'FOR':([12,14,15,16,20,22,23,25,37,38,70,74,],[-32,24,-8,-9,24,-14,-15,-7,-10,-16,24,-23,]),'RETURN':([12,14,15,16,19,20,21,22,23,25,29,37,38,74,],[-32,-32,-8,-9,28,-12,-13,-14,-15,-7,-11,-10,-16,-23,]),'ASSIGN':([17,18,],[26,27,]),'RBRACE':([20,21,22,23,29,38,43,70,73,74,],[-12,-13,-14,-15,-11,-16,49,-32,74,-23,]),'NUMBER':([26,27,28,39,40,41,42,44,53,54,55,56,57,58,],[31,34,35,34,34,34,34,34,34,34,34,34,34,34,]),'SEMICOLON':([31,32,33,34,35,36,38,45,46,47,48,50,61,62,63,64,65,66,],[37,-17,38,-18,43,44,-16,-19,-20,-21,-22,52,-24,-25,-26,-27,-28,-29,]),'PLUS':([32,33,34,45,46,47,48,51,60,61,62,63,64,65,66,68,],[-17,39,-18,39,39,39,39,39,68,39,39,39,39,39,39,71,]),'MINUS':([32,33,34,45,46,47,48,51,60,61,62,63,64,65,66,69,],[-17,40,-18,40,40,40,40,40,69,40,40,40,40,40,40,72,]),'TIMES':([32,33,34,45,46,47,48,51,61,62,63,64,65,66,],[-17,41,-18,41,41,41,41,41,41,41,41,41,41,41,]),'DIVIDE':([32,33,34,45,46,47,48,51,61,62,63,64,65,66,],[-17,42,-18,42,42,42,42,42,42,42,42,42,42,42,]),'LT':([32,34,45,46,47,48,51,],[-17,-18,-19,-20,-21,-22,53,]),'LE':([32,34,45,46,47,48,51,],[-17,-18,-19,-20,-21,-22,54,]),'GT':([32,34,45,46,47,48,51,],[-17,-18,-19,-20,-21,-22,55,]),'GE':([32,34,45,46,47,48,51,],[-17,-18,-19,-20,-21,-22,56,]),'EQ':([32,34,45,46,47,48,51,],[-17,-18,-19,-20,-21,-22,57,]),'NE':([32,34,45,46,47,48,51,],[-17,-18,-19,-20,-21,-22,58,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'declaration':([0,],[2,]),'for_loop':([2,],[4,]),'assignment':([7,],[9,]),'condition':([11,],[13,]),'increment':([16,],[18,]),'block':([23,],[25,]),'system_println_statement':([23,],[26,]),}
+_lr_goto_items = {'program':([0,],[1,]),'includes':([0,3,],[2,8,]),'empty':([0,3,12,14,15,20,70,],[4,4,16,21,16,21,21,]),'function':([2,],[5,]),'type':([2,12,15,],[6,13,13,]),'declarations':([12,15,],[14,25,]),'declaration':([12,15,],[15,15,]),'statements':([14,20,70,],[19,29,73,]),'statement':([14,20,70,],[20,20,20,]),'assignment':([14,20,30,70,],[22,22,36,22,]),'for_loop':([14,20,70,],[23,23,23,]),'expression':([27,39,40,41,42,44,53,54,55,56,57,58,],[33,45,46,47,48,51,61,62,63,64,65,66,]),'condition':([44,],[50,]),'increment':([52,],[59,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,12 +27,36 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> declaration for_loop','program',2,'p_program','parser_1.py',9),
-  ('declaration -> INT ID SEMICOLON','declaration',3,'p_declaration','parser_1.py',15),
-  ('for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE','for_loop',11,'p_for_loop','parser_1.py',20),
-  ('assignment -> ID ASSIGN NUMBER','assignment',3,'p_assignment','parser_1.py',25),
-  ('condition -> ID LE NUMBER','condition',3,'p_condition','parser_1.py',30),
-  ('increment -> ID PLUS PLUS','increment',3,'p_increment','parser_1.py',35),
-  ('block -> system_println_statement','block',1,'p_block','parser_1.py',40),
-  ('system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON','system_println_statement',9,'p_system_println_statement','parser_1.py',44),
+  ('program -> includes function','program',2,'p_program','parser_1.py',9),
+  ('includes -> INCLUDE includes','includes',2,'p_includes','parser_1.py',15),
+  ('includes -> INCLUDE','includes',1,'p_includes','parser_1.py',16),
+  ('includes -> empty','includes',1,'p_includes','parser_1.py',17),
+  ('function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE','function',11,'p_function','parser_1.py',21),
+  ('type -> INT','type',1,'p_type','parser_1.py',25),
+  ('declarations -> declaration declarations','declarations',2,'p_declarations','parser_1.py',29),
+  ('declarations -> declaration','declarations',1,'p_declarations','parser_1.py',30),
+  ('declarations -> empty','declarations',1,'p_declarations','parser_1.py',31),
+  ('declaration -> type ID ASSIGN NUMBER SEMICOLON','declaration',5,'p_declaration','parser_1.py',35),
+  ('statements -> statement statements','statements',2,'p_statements','parser_1.py',40),
+  ('statements -> statement','statements',1,'p_statements','parser_1.py',41),
+  ('statements -> empty','statements',1,'p_statements','parser_1.py',42),
+  ('statement -> assignment','statement',1,'p_statement','parser_1.py',46),
+  ('statement -> for_loop','statement',1,'p_statement','parser_1.py',47),
+  ('assignment -> ID ASSIGN expression SEMICOLON','assignment',4,'p_assignment','parser_1.py',51),
+  ('expression -> ID','expression',1,'p_expression','parser_1.py',56),
+  ('expression -> NUMBER','expression',1,'p_expression','parser_1.py',57),
+  ('expression -> expression PLUS expression','expression',3,'p_expression','parser_1.py',58),
+  ('expression -> expression MINUS expression','expression',3,'p_expression','parser_1.py',59),
+  ('expression -> expression TIMES expression','expression',3,'p_expression','parser_1.py',60),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression','parser_1.py',61),
+  ('for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE','for_loop',11,'p_for_loop','parser_1.py',66),
+  ('condition -> expression LT expression','condition',3,'p_condition','parser_1.py',71),
+  ('condition -> expression LE expression','condition',3,'p_condition','parser_1.py',72),
+  ('condition -> expression GT expression','condition',3,'p_condition','parser_1.py',73),
+  ('condition -> expression GE expression','condition',3,'p_condition','parser_1.py',74),
+  ('condition -> expression EQ expression','condition',3,'p_condition','parser_1.py',75),
+  ('condition -> expression NE expression','condition',3,'p_condition','parser_1.py',76),
+  ('increment -> ID PLUS PLUS','increment',3,'p_increment','parser_1.py',80),
+  ('increment -> ID MINUS MINUS','increment',3,'p_increment','parser_1.py',81),
+  ('empty -> <empty>','empty',0,'p_empty','parser_1.py',86),
 ]

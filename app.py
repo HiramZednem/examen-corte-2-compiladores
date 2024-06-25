@@ -62,4 +62,4 @@ def index():
     return render_template('index.html', tokens=tokens, syntax_result=syntax_result, semantic_result=semantic_result, counts=counts)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

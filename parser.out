@@ -3,91 +3,104 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     COMMA
-    CONSOLE
-    DIVIDE
-    EQ
-    GE
-    GLOBAL
-    GT
-    LOG
-    LT
-    MINUS
-    NE
-    SINGLE_QUOTE
-    STRING
-    TIMES
-    VAR
 
 Grammar
 
 Rule 0     S' -> program
-Rule 1     program -> declaration for_loop
-Rule 2     declaration -> INT ID SEMICOLON
-Rule 3     for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE
-Rule 4     assignment -> ID ASSIGN NUMBER
-Rule 5     condition -> ID LE NUMBER
-Rule 6     increment -> ID PLUS PLUS
-Rule 7     block -> system_println_statement
-Rule 8     system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON
+Rule 1     program -> includes function
+Rule 2     includes -> INCLUDE includes
+Rule 3     includes -> INCLUDE
+Rule 4     includes -> empty
+Rule 5     function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE
+Rule 6     type -> INT
+Rule 7     declarations -> declaration declarations
+Rule 8     declarations -> declaration
+Rule 9     declarations -> empty
+Rule 10    declaration -> type ID ASSIGN NUMBER SEMICOLON
+Rule 11    statements -> statement statements
+Rule 12    statements -> statement
+Rule 13    statements -> empty
+Rule 14    statement -> assignment
+Rule 15    statement -> for_loop
+Rule 16    assignment -> ID ASSIGN expression SEMICOLON
+Rule 17    expression -> ID
+Rule 18    expression -> NUMBER
+Rule 19    expression -> expression PLUS expression
+Rule 20    expression -> expression MINUS expression
+Rule 21    expression -> expression TIMES expression
+Rule 22    expression -> expression DIVIDE expression
+Rule 23    for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
+Rule 24    condition -> expression LT expression
+Rule 25    condition -> expression LE expression
+Rule 26    condition -> expression GT expression
+Rule 27    condition -> expression GE expression
+Rule 28    condition -> expression EQ expression
+Rule 29    condition -> expression NE expression
+Rule 30    increment -> ID PLUS PLUS
+Rule 31    increment -> ID MINUS MINUS
+Rule 32    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ASSIGN               : 4
+ASSIGN               : 10 16
 COMMA                : 
-CONSOLE              : 
-DIVIDE               : 
-DOT                  : 8 8
-EQ                   : 
-FOR                  : 3
-GE                   : 
-GLOBAL               : 
-GT                   : 
-ID                   : 2 4 5 6 8
-INT                  : 2
-LBRACE               : 3
-LE                   : 5
-LOG                  : 
-LPAREN               : 3 8
-LT                   : 
-MINUS                : 
-NE                   : 
-NUMBER               : 4 5
-OUT                  : 8
-PLUS                 : 6 6
-PRINTLN              : 8
-RBRACE               : 3
-RPAREN               : 3 8
-SEMICOLON            : 2 3 3 8
-SINGLE_QUOTE         : 
-STRING               : 
-SYSTEM               : 8
-TIMES                : 
-VAR                  : 
+DIVIDE               : 22
+EQ                   : 28
+FOR                  : 23
+GE                   : 27
+GT                   : 26
+ID                   : 5 10 16 17 30 31
+INCLUDE              : 2 3
+INT                  : 6
+LBRACE               : 5 23
+LE                   : 25
+LPAREN               : 5 23
+LT                   : 24
+MINUS                : 20 31 31
+NE                   : 29
+NUMBER               : 5 10 18
+PLUS                 : 19 30 30
+RBRACE               : 5 23
+RETURN               : 5
+RPAREN               : 5 23
+SEMICOLON            : 5 10 16 23 23
+TIMES                : 21
 error                : 
 
 Nonterminals, with rules where they appear
 
-assignment           : 3
-block                : 3
-condition            : 3
-declaration          : 1
-for_loop             : 1
-increment            : 3
+assignment           : 14 23
+condition            : 23
+declaration          : 7 8
+declarations         : 5 7
+empty                : 4 9 13
+expression           : 16 19 19 20 20 21 21 22 22 24 24 25 25 26 26 27 27 28 28 29 29
+for_loop             : 15
+function             : 1
+includes             : 1 2
+increment            : 23
 program              : 0
-system_println_statement : 7
+statement            : 11 12
+statements           : 5 11 23
+type                 : 5 10
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . program
-    (1) program -> . declaration for_loop
-    (2) declaration -> . INT ID SEMICOLON
+    (1) program -> . includes function
+    (2) includes -> . INCLUDE includes
+    (3) includes -> . INCLUDE
+    (4) includes -> . empty
+    (32) empty -> .
 
-    INT             shift and go to state 3
+    INCLUDE         shift and go to state 3
+    INT             reduce using rule 32 (empty -> .)
 
     program                        shift and go to state 1
-    declaration                    shift and go to state 2
+    includes                       shift and go to state 2
+    empty                          shift and go to state 4
 
 state 1
 
@@ -97,257 +110,955 @@ state 1
 
 state 2
 
-    (1) program -> declaration . for_loop
-    (3) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE
+    (1) program -> includes . function
+    (5) function -> . type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE
+    (6) type -> . INT
 
-    FOR             shift and go to state 5
+    INT             shift and go to state 7
 
-    for_loop                       shift and go to state 4
+    function                       shift and go to state 5
+    type                           shift and go to state 6
 
 state 3
 
-    (2) declaration -> INT . ID SEMICOLON
+    (2) includes -> INCLUDE . includes
+    (3) includes -> INCLUDE .
+    (2) includes -> . INCLUDE includes
+    (3) includes -> . INCLUDE
+    (4) includes -> . empty
+    (32) empty -> .
 
-    ID              shift and go to state 6
+  ! reduce/reduce conflict for INT resolved using rule 3 (includes -> INCLUDE .)
+    INT             reduce using rule 3 (includes -> INCLUDE .)
+    INCLUDE         shift and go to state 3
 
+  ! INT             [ reduce using rule 32 (empty -> .) ]
+
+    includes                       shift and go to state 8
+    empty                          shift and go to state 4
 
 state 4
 
-    (1) program -> declaration for_loop .
+    (4) includes -> empty .
 
-    $end            reduce using rule 1 (program -> declaration for_loop .)
+    INT             reduce using rule 4 (includes -> empty .)
 
 
 state 5
 
-    (3) for_loop -> FOR . LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE
+    (1) program -> includes function .
 
-    LPAREN          shift and go to state 7
+    $end            reduce using rule 1 (program -> includes function .)
 
 
 state 6
 
-    (2) declaration -> INT ID . SEMICOLON
+    (5) function -> type . ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE
 
-    SEMICOLON       shift and go to state 8
+    ID              shift and go to state 9
 
 
 state 7
 
-    (3) for_loop -> FOR LPAREN . assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE
-    (4) assignment -> . ID ASSIGN NUMBER
+    (6) type -> INT .
 
-    ID              shift and go to state 10
+    ID              reduce using rule 6 (type -> INT .)
 
-    assignment                     shift and go to state 9
 
 state 8
 
-    (2) declaration -> INT ID SEMICOLON .
+    (2) includes -> INCLUDE includes .
 
-    FOR             reduce using rule 2 (declaration -> INT ID SEMICOLON .)
+    INT             reduce using rule 2 (includes -> INCLUDE includes .)
 
 
 state 9
 
-    (3) for_loop -> FOR LPAREN assignment . SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE
+    (5) function -> type ID . LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE
 
-    SEMICOLON       shift and go to state 11
+    LPAREN          shift and go to state 10
 
 
 state 10
 
-    (4) assignment -> ID . ASSIGN NUMBER
+    (5) function -> type ID LPAREN . RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE
 
-    ASSIGN          shift and go to state 12
+    RPAREN          shift and go to state 11
 
 
 state 11
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON . condition SEMICOLON increment RPAREN LBRACE block RBRACE
-    (5) condition -> . ID LE NUMBER
+    (5) function -> type ID LPAREN RPAREN . LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE
 
-    ID              shift and go to state 14
+    LBRACE          shift and go to state 12
 
-    condition                      shift and go to state 13
 
 state 12
 
-    (4) assignment -> ID ASSIGN . NUMBER
+    (5) function -> type ID LPAREN RPAREN LBRACE . declarations statements RETURN NUMBER SEMICOLON RBRACE
+    (7) declarations -> . declaration declarations
+    (8) declarations -> . declaration
+    (9) declarations -> . empty
+    (10) declaration -> . type ID ASSIGN NUMBER SEMICOLON
+    (32) empty -> .
+    (6) type -> . INT
 
-    NUMBER          shift and go to state 15
+    ID              reduce using rule 32 (empty -> .)
+    FOR             reduce using rule 32 (empty -> .)
+    RETURN          reduce using rule 32 (empty -> .)
+    INT             shift and go to state 7
 
+    type                           shift and go to state 13
+    declarations                   shift and go to state 14
+    declaration                    shift and go to state 15
+    empty                          shift and go to state 16
 
 state 13
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition . SEMICOLON increment RPAREN LBRACE block RBRACE
+    (10) declaration -> type . ID ASSIGN NUMBER SEMICOLON
 
-    SEMICOLON       shift and go to state 16
+    ID              shift and go to state 17
 
 
 state 14
 
-    (5) condition -> ID . LE NUMBER
+    (5) function -> type ID LPAREN RPAREN LBRACE declarations . statements RETURN NUMBER SEMICOLON RBRACE
+    (11) statements -> . statement statements
+    (12) statements -> . statement
+    (13) statements -> . empty
+    (14) statement -> . assignment
+    (15) statement -> . for_loop
+    (32) empty -> .
+    (16) assignment -> . ID ASSIGN expression SEMICOLON
+    (23) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
-    LE              shift and go to state 17
+    RETURN          reduce using rule 32 (empty -> .)
+    ID              shift and go to state 18
+    FOR             shift and go to state 24
 
+    statements                     shift and go to state 19
+    statement                      shift and go to state 20
+    empty                          shift and go to state 21
+    assignment                     shift and go to state 22
+    for_loop                       shift and go to state 23
 
 state 15
 
-    (4) assignment -> ID ASSIGN NUMBER .
+    (7) declarations -> declaration . declarations
+    (8) declarations -> declaration .
+    (7) declarations -> . declaration declarations
+    (8) declarations -> . declaration
+    (9) declarations -> . empty
+    (10) declaration -> . type ID ASSIGN NUMBER SEMICOLON
+    (32) empty -> .
+    (6) type -> . INT
 
-    SEMICOLON       reduce using rule 4 (assignment -> ID ASSIGN NUMBER .)
+  ! reduce/reduce conflict for ID resolved using rule 8 (declarations -> declaration .)
+  ! reduce/reduce conflict for FOR resolved using rule 8 (declarations -> declaration .)
+  ! reduce/reduce conflict for RETURN resolved using rule 8 (declarations -> declaration .)
+    ID              reduce using rule 8 (declarations -> declaration .)
+    FOR             reduce using rule 8 (declarations -> declaration .)
+    RETURN          reduce using rule 8 (declarations -> declaration .)
+    INT             shift and go to state 7
 
+  ! ID              [ reduce using rule 32 (empty -> .) ]
+  ! FOR             [ reduce using rule 32 (empty -> .) ]
+  ! RETURN          [ reduce using rule 32 (empty -> .) ]
+
+    declaration                    shift and go to state 15
+    declarations                   shift and go to state 25
+    empty                          shift and go to state 16
+    type                           shift and go to state 13
 
 state 16
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON . increment RPAREN LBRACE block RBRACE
-    (6) increment -> . ID PLUS PLUS
+    (9) declarations -> empty .
 
-    ID              shift and go to state 19
+    ID              reduce using rule 9 (declarations -> empty .)
+    FOR             reduce using rule 9 (declarations -> empty .)
+    RETURN          reduce using rule 9 (declarations -> empty .)
 
-    increment                      shift and go to state 18
 
 state 17
 
-    (5) condition -> ID LE . NUMBER
+    (10) declaration -> type ID . ASSIGN NUMBER SEMICOLON
 
-    NUMBER          shift and go to state 20
+    ASSIGN          shift and go to state 26
 
 
 state 18
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment . RPAREN LBRACE block RBRACE
+    (16) assignment -> ID . ASSIGN expression SEMICOLON
 
-    RPAREN          shift and go to state 21
+    ASSIGN          shift and go to state 27
 
 
 state 19
 
-    (6) increment -> ID . PLUS PLUS
+    (5) function -> type ID LPAREN RPAREN LBRACE declarations statements . RETURN NUMBER SEMICOLON RBRACE
 
-    PLUS            shift and go to state 22
+    RETURN          shift and go to state 28
 
 
 state 20
 
-    (5) condition -> ID LE NUMBER .
+    (11) statements -> statement . statements
+    (12) statements -> statement .
+    (11) statements -> . statement statements
+    (12) statements -> . statement
+    (13) statements -> . empty
+    (14) statement -> . assignment
+    (15) statement -> . for_loop
+    (32) empty -> .
+    (16) assignment -> . ID ASSIGN expression SEMICOLON
+    (23) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
-    SEMICOLON       reduce using rule 5 (condition -> ID LE NUMBER .)
+  ! reduce/reduce conflict for RETURN resolved using rule 12 (statements -> statement .)
+  ! reduce/reduce conflict for RBRACE resolved using rule 12 (statements -> statement .)
+    RETURN          reduce using rule 12 (statements -> statement .)
+    RBRACE          reduce using rule 12 (statements -> statement .)
+    ID              shift and go to state 18
+    FOR             shift and go to state 24
 
+  ! RETURN          [ reduce using rule 32 (empty -> .) ]
+  ! RBRACE          [ reduce using rule 32 (empty -> .) ]
+
+    statement                      shift and go to state 20
+    statements                     shift and go to state 29
+    empty                          shift and go to state 21
+    assignment                     shift and go to state 22
+    for_loop                       shift and go to state 23
 
 state 21
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN . LBRACE block RBRACE
+    (13) statements -> empty .
 
-    LBRACE          shift and go to state 23
+    RETURN          reduce using rule 13 (statements -> empty .)
+    RBRACE          reduce using rule 13 (statements -> empty .)
 
 
 state 22
 
-    (6) increment -> ID PLUS . PLUS
+    (14) statement -> assignment .
 
-    PLUS            shift and go to state 24
+    ID              reduce using rule 14 (statement -> assignment .)
+    FOR             reduce using rule 14 (statement -> assignment .)
+    RETURN          reduce using rule 14 (statement -> assignment .)
+    RBRACE          reduce using rule 14 (statement -> assignment .)
 
 
 state 23
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE . block RBRACE
-    (7) block -> . system_println_statement
-    (8) system_println_statement -> . SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON
+    (15) statement -> for_loop .
 
-    SYSTEM          shift and go to state 27
+    ID              reduce using rule 15 (statement -> for_loop .)
+    FOR             reduce using rule 15 (statement -> for_loop .)
+    RETURN          reduce using rule 15 (statement -> for_loop .)
+    RBRACE          reduce using rule 15 (statement -> for_loop .)
 
-    block                          shift and go to state 25
-    system_println_statement       shift and go to state 26
 
 state 24
 
-    (6) increment -> ID PLUS PLUS .
+    (23) for_loop -> FOR . LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
-    RPAREN          reduce using rule 6 (increment -> ID PLUS PLUS .)
+    LPAREN          shift and go to state 30
 
 
 state 25
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block . RBRACE
+    (7) declarations -> declaration declarations .
 
-    RBRACE          shift and go to state 28
+    ID              reduce using rule 7 (declarations -> declaration declarations .)
+    FOR             reduce using rule 7 (declarations -> declaration declarations .)
+    RETURN          reduce using rule 7 (declarations -> declaration declarations .)
 
 
 state 26
 
-    (7) block -> system_println_statement .
+    (10) declaration -> type ID ASSIGN . NUMBER SEMICOLON
 
-    RBRACE          reduce using rule 7 (block -> system_println_statement .)
+    NUMBER          shift and go to state 31
 
 
 state 27
 
-    (8) system_println_statement -> SYSTEM . DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON
+    (16) assignment -> ID ASSIGN . expression SEMICOLON
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
 
-    DOT             shift and go to state 29
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
 
+    expression                     shift and go to state 33
 
 state 28
 
-    (3) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE .
+    (5) function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN . NUMBER SEMICOLON RBRACE
 
-    $end            reduce using rule 3 (for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE .)
+    NUMBER          shift and go to state 35
 
 
 state 29
 
-    (8) system_println_statement -> SYSTEM DOT . OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON
+    (11) statements -> statement statements .
 
-    OUT             shift and go to state 30
+    RETURN          reduce using rule 11 (statements -> statement statements .)
+    RBRACE          reduce using rule 11 (statements -> statement statements .)
 
 
 state 30
 
-    (8) system_println_statement -> SYSTEM DOT OUT . DOT PRINTLN LPAREN ID RPAREN SEMICOLON
+    (23) for_loop -> FOR LPAREN . assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
+    (16) assignment -> . ID ASSIGN expression SEMICOLON
 
-    DOT             shift and go to state 31
+    ID              shift and go to state 18
 
+    assignment                     shift and go to state 36
 
 state 31
 
-    (8) system_println_statement -> SYSTEM DOT OUT DOT . PRINTLN LPAREN ID RPAREN SEMICOLON
+    (10) declaration -> type ID ASSIGN NUMBER . SEMICOLON
 
-    PRINTLN         shift and go to state 32
+    SEMICOLON       shift and go to state 37
 
 
 state 32
 
-    (8) system_println_statement -> SYSTEM DOT OUT DOT PRINTLN . LPAREN ID RPAREN SEMICOLON
+    (17) expression -> ID .
 
-    LPAREN          shift and go to state 33
+    SEMICOLON       reduce using rule 17 (expression -> ID .)
+    PLUS            reduce using rule 17 (expression -> ID .)
+    MINUS           reduce using rule 17 (expression -> ID .)
+    TIMES           reduce using rule 17 (expression -> ID .)
+    DIVIDE          reduce using rule 17 (expression -> ID .)
+    LT              reduce using rule 17 (expression -> ID .)
+    LE              reduce using rule 17 (expression -> ID .)
+    GT              reduce using rule 17 (expression -> ID .)
+    GE              reduce using rule 17 (expression -> ID .)
+    EQ              reduce using rule 17 (expression -> ID .)
+    NE              reduce using rule 17 (expression -> ID .)
 
 
 state 33
 
-    (8) system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN . ID RPAREN SEMICOLON
+    (16) assignment -> ID ASSIGN expression . SEMICOLON
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
 
-    ID              shift and go to state 34
+    SEMICOLON       shift and go to state 38
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
 
 
 state 34
 
-    (8) system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN ID . RPAREN SEMICOLON
+    (18) expression -> NUMBER .
 
-    RPAREN          shift and go to state 35
+    SEMICOLON       reduce using rule 18 (expression -> NUMBER .)
+    PLUS            reduce using rule 18 (expression -> NUMBER .)
+    MINUS           reduce using rule 18 (expression -> NUMBER .)
+    TIMES           reduce using rule 18 (expression -> NUMBER .)
+    DIVIDE          reduce using rule 18 (expression -> NUMBER .)
+    LT              reduce using rule 18 (expression -> NUMBER .)
+    LE              reduce using rule 18 (expression -> NUMBER .)
+    GT              reduce using rule 18 (expression -> NUMBER .)
+    GE              reduce using rule 18 (expression -> NUMBER .)
+    EQ              reduce using rule 18 (expression -> NUMBER .)
+    NE              reduce using rule 18 (expression -> NUMBER .)
 
 
 state 35
 
-    (8) system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN . SEMICOLON
+    (5) function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER . SEMICOLON RBRACE
 
-    SEMICOLON       shift and go to state 36
+    SEMICOLON       shift and go to state 43
 
 
 state 36
 
-    (8) system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON .
+    (23) for_loop -> FOR LPAREN assignment . SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
 
-    RBRACE          reduce using rule 8 (system_println_statement -> SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON .)
+    SEMICOLON       shift and go to state 44
 
+
+state 37
+
+    (10) declaration -> type ID ASSIGN NUMBER SEMICOLON .
+
+    INT             reduce using rule 10 (declaration -> type ID ASSIGN NUMBER SEMICOLON .)
+    ID              reduce using rule 10 (declaration -> type ID ASSIGN NUMBER SEMICOLON .)
+    FOR             reduce using rule 10 (declaration -> type ID ASSIGN NUMBER SEMICOLON .)
+    RETURN          reduce using rule 10 (declaration -> type ID ASSIGN NUMBER SEMICOLON .)
+
+
+state 38
+
+    (16) assignment -> ID ASSIGN expression SEMICOLON .
+
+    ID              reduce using rule 16 (assignment -> ID ASSIGN expression SEMICOLON .)
+    FOR             reduce using rule 16 (assignment -> ID ASSIGN expression SEMICOLON .)
+    RETURN          reduce using rule 16 (assignment -> ID ASSIGN expression SEMICOLON .)
+    RBRACE          reduce using rule 16 (assignment -> ID ASSIGN expression SEMICOLON .)
+    SEMICOLON       reduce using rule 16 (assignment -> ID ASSIGN expression SEMICOLON .)
+
+
+state 39
+
+    (19) expression -> expression PLUS . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 45
+
+state 40
+
+    (20) expression -> expression MINUS . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 46
+
+state 41
+
+    (21) expression -> expression TIMES . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 47
+
+state 42
+
+    (22) expression -> expression DIVIDE . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 48
+
+state 43
+
+    (5) function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON . RBRACE
+
+    RBRACE          shift and go to state 49
+
+
+state 44
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON . condition SEMICOLON increment RPAREN LBRACE statements RBRACE
+    (24) condition -> . expression LT expression
+    (25) condition -> . expression LE expression
+    (26) condition -> . expression GT expression
+    (27) condition -> . expression GE expression
+    (28) condition -> . expression EQ expression
+    (29) condition -> . expression NE expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    condition                      shift and go to state 50
+    expression                     shift and go to state 51
+
+state 45
+
+    (19) expression -> expression PLUS expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 19 (expression -> expression PLUS expression .)
+    LT              reduce using rule 19 (expression -> expression PLUS expression .)
+    LE              reduce using rule 19 (expression -> expression PLUS expression .)
+    GT              reduce using rule 19 (expression -> expression PLUS expression .)
+    GE              reduce using rule 19 (expression -> expression PLUS expression .)
+    EQ              reduce using rule 19 (expression -> expression PLUS expression .)
+    NE              reduce using rule 19 (expression -> expression PLUS expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+  ! PLUS            [ reduce using rule 19 (expression -> expression PLUS expression .) ]
+  ! MINUS           [ reduce using rule 19 (expression -> expression PLUS expression .) ]
+  ! TIMES           [ reduce using rule 19 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 19 (expression -> expression PLUS expression .) ]
+
+
+state 46
+
+    (20) expression -> expression MINUS expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 20 (expression -> expression MINUS expression .)
+    LT              reduce using rule 20 (expression -> expression MINUS expression .)
+    LE              reduce using rule 20 (expression -> expression MINUS expression .)
+    GT              reduce using rule 20 (expression -> expression MINUS expression .)
+    GE              reduce using rule 20 (expression -> expression MINUS expression .)
+    EQ              reduce using rule 20 (expression -> expression MINUS expression .)
+    NE              reduce using rule 20 (expression -> expression MINUS expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+  ! PLUS            [ reduce using rule 20 (expression -> expression MINUS expression .) ]
+  ! MINUS           [ reduce using rule 20 (expression -> expression MINUS expression .) ]
+  ! TIMES           [ reduce using rule 20 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 20 (expression -> expression MINUS expression .) ]
+
+
+state 47
+
+    (21) expression -> expression TIMES expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 21 (expression -> expression TIMES expression .)
+    LT              reduce using rule 21 (expression -> expression TIMES expression .)
+    LE              reduce using rule 21 (expression -> expression TIMES expression .)
+    GT              reduce using rule 21 (expression -> expression TIMES expression .)
+    GE              reduce using rule 21 (expression -> expression TIMES expression .)
+    EQ              reduce using rule 21 (expression -> expression TIMES expression .)
+    NE              reduce using rule 21 (expression -> expression TIMES expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+  ! PLUS            [ reduce using rule 21 (expression -> expression TIMES expression .) ]
+  ! MINUS           [ reduce using rule 21 (expression -> expression TIMES expression .) ]
+  ! TIMES           [ reduce using rule 21 (expression -> expression TIMES expression .) ]
+  ! DIVIDE          [ reduce using rule 21 (expression -> expression TIMES expression .) ]
+
+
+state 48
+
+    (22) expression -> expression DIVIDE expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 22 (expression -> expression DIVIDE expression .)
+    LT              reduce using rule 22 (expression -> expression DIVIDE expression .)
+    LE              reduce using rule 22 (expression -> expression DIVIDE expression .)
+    GT              reduce using rule 22 (expression -> expression DIVIDE expression .)
+    GE              reduce using rule 22 (expression -> expression DIVIDE expression .)
+    EQ              reduce using rule 22 (expression -> expression DIVIDE expression .)
+    NE              reduce using rule 22 (expression -> expression DIVIDE expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+  ! PLUS            [ reduce using rule 22 (expression -> expression DIVIDE expression .) ]
+  ! MINUS           [ reduce using rule 22 (expression -> expression DIVIDE expression .) ]
+  ! TIMES           [ reduce using rule 22 (expression -> expression DIVIDE expression .) ]
+  ! DIVIDE          [ reduce using rule 22 (expression -> expression DIVIDE expression .) ]
+
+
+state 49
+
+    (5) function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE .
+
+    $end            reduce using rule 5 (function -> type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE .)
+
+
+state 50
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition . SEMICOLON increment RPAREN LBRACE statements RBRACE
+
+    SEMICOLON       shift and go to state 52
+
+
+state 51
+
+    (24) condition -> expression . LT expression
+    (25) condition -> expression . LE expression
+    (26) condition -> expression . GT expression
+    (27) condition -> expression . GE expression
+    (28) condition -> expression . EQ expression
+    (29) condition -> expression . NE expression
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    LT              shift and go to state 53
+    LE              shift and go to state 54
+    GT              shift and go to state 55
+    GE              shift and go to state 56
+    EQ              shift and go to state 57
+    NE              shift and go to state 58
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 52
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON . increment RPAREN LBRACE statements RBRACE
+    (30) increment -> . ID PLUS PLUS
+    (31) increment -> . ID MINUS MINUS
+
+    ID              shift and go to state 60
+
+    increment                      shift and go to state 59
+
+state 53
+
+    (24) condition -> expression LT . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 61
+
+state 54
+
+    (25) condition -> expression LE . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 62
+
+state 55
+
+    (26) condition -> expression GT . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 63
+
+state 56
+
+    (27) condition -> expression GE . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 64
+
+state 57
+
+    (28) condition -> expression EQ . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 65
+
+state 58
+
+    (29) condition -> expression NE . expression
+    (17) expression -> . ID
+    (18) expression -> . NUMBER
+    (19) expression -> . expression PLUS expression
+    (20) expression -> . expression MINUS expression
+    (21) expression -> . expression TIMES expression
+    (22) expression -> . expression DIVIDE expression
+
+    ID              shift and go to state 32
+    NUMBER          shift and go to state 34
+
+    expression                     shift and go to state 66
+
+state 59
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment . RPAREN LBRACE statements RBRACE
+
+    RPAREN          shift and go to state 67
+
+
+state 60
+
+    (30) increment -> ID . PLUS PLUS
+    (31) increment -> ID . MINUS MINUS
+
+    PLUS            shift and go to state 68
+    MINUS           shift and go to state 69
+
+
+state 61
+
+    (24) condition -> expression LT expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    SEMICOLON       reduce using rule 24 (condition -> expression LT expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 62
+
+    (25) condition -> expression LE expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    SEMICOLON       reduce using rule 25 (condition -> expression LE expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 63
+
+    (26) condition -> expression GT expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    SEMICOLON       reduce using rule 26 (condition -> expression GT expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 64
+
+    (27) condition -> expression GE expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    SEMICOLON       reduce using rule 27 (condition -> expression GE expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 65
+
+    (28) condition -> expression EQ expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    SEMICOLON       reduce using rule 28 (condition -> expression EQ expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 66
+
+    (29) condition -> expression NE expression .
+    (19) expression -> expression . PLUS expression
+    (20) expression -> expression . MINUS expression
+    (21) expression -> expression . TIMES expression
+    (22) expression -> expression . DIVIDE expression
+
+    SEMICOLON       reduce using rule 29 (condition -> expression NE expression .)
+    PLUS            shift and go to state 39
+    MINUS           shift and go to state 40
+    TIMES           shift and go to state 41
+    DIVIDE          shift and go to state 42
+
+
+state 67
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN . LBRACE statements RBRACE
+
+    LBRACE          shift and go to state 70
+
+
+state 68
+
+    (30) increment -> ID PLUS . PLUS
+
+    PLUS            shift and go to state 71
+
+
+state 69
+
+    (31) increment -> ID MINUS . MINUS
+
+    MINUS           shift and go to state 72
+
+
+state 70
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE . statements RBRACE
+    (11) statements -> . statement statements
+    (12) statements -> . statement
+    (13) statements -> . empty
+    (14) statement -> . assignment
+    (15) statement -> . for_loop
+    (32) empty -> .
+    (16) assignment -> . ID ASSIGN expression SEMICOLON
+    (23) for_loop -> . FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE
+
+    RBRACE          reduce using rule 32 (empty -> .)
+    ID              shift and go to state 18
+    FOR             shift and go to state 24
+
+    assignment                     shift and go to state 22
+    statements                     shift and go to state 73
+    statement                      shift and go to state 20
+    empty                          shift and go to state 21
+    for_loop                       shift and go to state 23
+
+state 71
+
+    (30) increment -> ID PLUS PLUS .
+
+    RPAREN          reduce using rule 30 (increment -> ID PLUS PLUS .)
+
+
+state 72
+
+    (31) increment -> ID MINUS MINUS .
+
+    RPAREN          reduce using rule 31 (increment -> ID MINUS MINUS .)
+
+
+state 73
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements . RBRACE
+
+    RBRACE          shift and go to state 74
+
+
+state 74
+
+    (23) for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE .
+
+    ID              reduce using rule 23 (for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE .)
+    FOR             reduce using rule 23 (for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE .)
+    RETURN          reduce using rule 23 (for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE .)
+    RBRACE          reduce using rule 23 (for_loop -> FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for PLUS in state 45 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 45 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 45 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 45 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 46 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 46 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 46 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 46 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 47 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 47 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 47 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 47 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 48 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 48 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 48 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 48 resolved as shift
+WARNING: reduce/reduce conflict in state 3 resolved using rule (includes -> INCLUDE)
+WARNING: rejected rule (empty -> <empty>) in state 3
+WARNING: reduce/reduce conflict in state 15 resolved using rule (declarations -> declaration)
+WARNING: rejected rule (empty -> <empty>) in state 15
+WARNING: reduce/reduce conflict in state 20 resolved using rule (statements -> statement)
+WARNING: rejected rule (empty -> <empty>) in state 20

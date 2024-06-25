@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analizador Léxico, Sintáctico y Semántico</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
         <h1>Analizador Léxico, Sintáctico y Semántico</h1>
         <form method="POST">
-            <input type="submit" value="Analizar">
-            <textarea name="code" rows="10" cols="50">{{ request.form.code if request.method == 'POST' else '' }}</textarea><br>
+            <input type="submit" value="Analizar" class="btn btn-primary">
+            <textarea name="code" rows="10" cols="50" class="form-control">{{ request.form.code if request.method == 'POST' else '' }}</textarea><br>
             
         </form>
         <div class="result flex-container">
-            <button class="accordion">Análisis Léxico</button>
+            <button class="accordion btn btn-primary">Análisis Léxico</button>
             <div class="panel">
-                <table class="analysis-table">                
+                <table class="analysis-table table">                
                     <tr>
                         <th>Token</th>
                         <th>Palabra reservada</th>
@@ -44,7 +44,7 @@
                     {% endfor %}
                 </table>
                 
-                <table class="counts-table">
+                <table class="counts-table table"></table>
                     <tr>
                         <th>Tipo</th>
                         <th>Conteo</th>
@@ -84,17 +84,20 @@
                 </table>
             </div>
             
-            <button class="accordion">Análisis Sintáctico</button>
+            <button class="accordion btn btn-primary">Análisis Sintáctico</button>
             <div class="panel">
                 <pre>{{ syntax_result }}</pre>
             </div>
             
-            <button class="accordion">Análisis Semántico</button>
+            <button class="accordion btn btn-primary">Análisis Semántico</button>
             <div class="panel">
                 <p>{{ semantic_result }}</p>
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         var acc = document.getElementsByClassName("accordion");
         for (var i = 0; i < acc.length; i++) {

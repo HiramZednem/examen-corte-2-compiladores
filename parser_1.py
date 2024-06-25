@@ -6,44 +6,85 @@ defined_variables = set()  # Conjunto para almacenar variables definidas
 
 # Definición de la gramática
 def p_program(p):
-    '''program : declaration for_loop'''
+    '''program : includes function'''
     # Validar que las variables definidas estén utilizadas correctamente
     validate_variables()
     p[0] = "La estructura del código está bien."
 
+def p_includes(p):
+    '''includes : INCLUDE includes
+                | INCLUDE
+                | empty'''
+    pass
+
+def p_function(p):
+    '''function : type ID LPAREN RPAREN LBRACE declarations statements RETURN NUMBER SEMICOLON RBRACE'''
+    p[0] = f"Función {p[2]} declarada correctamente."
+
+def p_type(p):
+    '''type : INT'''
+    p[0] = p[1]
+
+def p_declarations(p):
+    '''declarations : declaration declarations
+                    | declaration
+                    | empty'''
+    pass
+
 def p_declaration(p):
-    '''declaration : INT ID SEMICOLON'''
+    '''declaration : type ID ASSIGN NUMBER SEMICOLON'''
     defined_variables.add(p[2])  # Agregar variable a conjunto de variables definidas
-    p[0] = f"Declaración: int {p[2]};"  # Mensaje informativo
+    p[0] = f"Declaración: int {p[2]} = {p[4]};"  # Mensaje informativo
+
+def p_statements(p):
+    '''statements : statement statements
+                  | statement
+                  | empty'''
+    pass
+
+def p_statement(p):
+    '''statement : assignment
+                 | for_loop'''
+    pass
+
+def p_assignment(p):
+    '''assignment : ID ASSIGN expression SEMICOLON'''
+    validate_variable_definition(p[1])
+    p[0] = p[1]
+
+def p_expression(p):
+    '''expression : ID
+                  | NUMBER
+                  | expression PLUS expression
+                  | expression MINUS expression
+                  | expression TIMES expression
+                  | expression DIVIDE expression'''
+    if isinstance(p[1], str):
+        validate_variable_definition(p[1])
 
 def p_for_loop(p):
-    '''for_loop : FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE block RBRACE'''
+    '''for_loop : FOR LPAREN assignment SEMICOLON condition SEMICOLON increment RPAREN LBRACE statements RBRACE'''
     validate_for_loop_variables(p[3], p[5], p[7])  # Validar variables dentro del for loop
     p[0] = f"For loop desde {p[3]} hasta {p[5]} con incremento {p[7]} y bloque: {p[10]}"
 
-def p_assignment(p):
-    '''assignment : ID ASSIGN NUMBER'''
-    p[0] = p[1]  # Devolver el nombre de la variable asignada
-    validate_variable_definition(p[1])
-
 def p_condition(p):
-    '''condition : ID LE NUMBER'''
-    p[0] = p[1]  # Devolver el nombre de la variable de la condición
-    validate_variable_definition(p[1])
+    '''condition : expression LT expression
+                 | expression LE expression
+                 | expression GT expression
+                 | expression GE expression
+                 | expression EQ expression
+                 | expression NE expression'''
+    pass
 
 def p_increment(p):
-    '''increment : ID PLUS PLUS'''
-    p[0] = p[1]  # Devolver el nombre de la variable del incremento
+    '''increment : ID PLUS PLUS
+                 | ID MINUS MINUS'''
     validate_variable_definition(p[1])
-
-def p_block(p):
-    '''block : system_println_statement'''
     p[0] = p[1]
 
-def p_system_println_statement(p):
-    '''system_println_statement : SYSTEM DOT OUT DOT PRINTLN LPAREN ID RPAREN SEMICOLON'''
-    validate_variable_definition(p[7])
-    p[0] = f"Impresión: System.out.println({p[7]})"
+def p_empty(p):
+    'empty :'
+    pass
 
 def validate_variable_definition(variable):
     if variable not in defined_variables:
@@ -65,7 +106,7 @@ def p_error(p):
         error_message = f"Línea {p.lineno}.- Error de sintaxis en '{p.value}'"
         raise SyntaxError(error_message)
     else:
-        raise SyntaxError(f"Error de sintaxis al final del archivo en la línea {lexer.lexer.lineno}. Falta una llave de cierre o punto y coma.")
+        raise SyntaxError(f"Error de sintaxis al final del archivo en la línea {lexer.lineno}. Falta una llave de cierre o punto y coma.")
 
 # Construir el parser
 parser = yacc.yacc()
